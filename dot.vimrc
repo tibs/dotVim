@@ -139,10 +139,14 @@ if has("autocmd")
   " - and use it to match our pattern in the current window
   "   (note that the 'last' match used wins...)
   "
-  " Alec suggests that:
-  autocmd FileType c,cpp exec 'match rightMargin /.\%>80v/'
-  " may work better (and is simpler) than my original:
-  "autocmd BufNewFile,BufRead,BufEnter,FilterReadPost,FileReadPost *.c,*.h exec 'match rightMargin /.\%>80v/'
+  if version >= 703
+	  set colorcolumn=80
+  else
+	  " Alec suggests that:
+	  autocmd FileType c,cpp exec 'match rightMargin /.\%>80v/'
+	  " may work better (and is simpler) than my original:
+	  "autocmd BufNewFile,BufRead,BufEnter,FilterReadPost,FileReadPost *.c,*.h exec 'match rightMargin /.\%>80v/'
+  endif
 endif
 
 " An alternative (better?) way to highlight whitespace errors:
