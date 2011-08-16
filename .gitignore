@@ -1,0 +1,11 @@
+# Standard stuff
+*~
+*.swp
+
+# All of my bundle directory, since the contents are more git clones
+# (of course, one needs to do::
+#
+#	$ git clone http://github.com/gmarik/vundle.git  bundle/vundle
+#
+# in this dotVim directory to get vundle itself back...
+bundle/

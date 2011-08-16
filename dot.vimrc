@@ -13,6 +13,72 @@ endif
 " This must be first, because it changes other options as a side effect.
 set nocompatible
 
+" =============================================================================
+" VUNDLE START
+" =============================================================================
+filetype on		" because sometimes on Mac OS X, off before on causes problems
+filetype off		" must do this before vundle business
+
+" Vim 7.2 without some patch or other doesn't support current vundle.
+" The MacVim I was using was OK, but the Apple vim wasn't. So upgrade
+" the MavVim to 7.3 and test for that...
+if version >= 703
+  set rtp+=~/.vim/bundle/vundle/
+  call vundle#rc()
+  
+  " Start off with vundle itself
+  Bundle 'gmarik/vundle'
+  " Then various things mirrored at http://vim-scripts.org/vim/scripts.html
+  Bundle 'bufexplorer.zip'
+  " VimReStructuredText
+  Bundle 'VST'
+  " Yet another indent finder, almost
+  Bundle 'yaifa.vim'
+  "
+  Bundle 'vimgdb'
+  Bundle 'python.vim--Vasiliev'
+  Bundle 'RST-Tables'
+  Bundle 'scratch'
+  
+  "Bundle 'pyflakes.vim'
+  "Bundle 'pysmell.vim'
+  
+  Bundle 'ls.vim'
+  Bundle 'occur.vim'
+  Bundle 'sessions.vim--Boland'
+  Bundle 'Indent-Guides'
+  
+  " Colour scheme related
+  " First, a template for building one's own colour scheme
+  Bundle 'colorscheme_template.vim'
+  " Then some specific examples
+  Bundle 'habiLight'
+  Bundle 'pyte'
+  Bundle 'proton'
+  Bundle 'sienna'
+  
+  filetype plugin indent on	" and this required at end of vundle stuff
+endif
+
+" Brief help
+"
+" :BundleInstall  - install bundles (won't update installed)
+" :BundleInstall! - update if installed
+"
+" :Bundles foo    - search for foo
+" :Bundles! foo   - refresh cached list and search for foo
+"
+" :BundleClean    - confirm removal of unused bundles
+" :BundleClean!   - remove without confirmation
+"
+" see :h vundle for more details
+" or wiki for FAQ
+" Note: comments after Bundle command are not allowed..
+" =============================================================================
+" VUNDLE END
+" =============================================================================
+
+
 " allow backspacing over everything in insert mode
 set backspace=indent,eol,start
 
@@ -213,7 +279,7 @@ set statusline+=%-14.(%l,%c%V%)\ %P	" ruler
 " This (perhaps cruder) version does not
 nmap <leader>today :execute "normal i" . strftime("%F%n==========%n%A %d %B%n")<Esc>
 
-function EndLine()
+function! EndLine()
     " If the filetype is already "rst" (presumably because my .vimrc made it
     " so), then embed that into the file as well (naughty but nice)
     if &filetype == "rst"

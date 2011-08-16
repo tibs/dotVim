@@ -66,7 +66,9 @@ if version >= 500
 endif
 
 " My own additions
-if has('unix')
+if has('macunix')
+	set guifont=Monaco:h12
+elseif has('unix')
 	if hostname() == "rocket.arg.sj.co.uk"
 		set guifont=-misc-fixed-medium-r-normal-*-*-120-*-*-c-*-iso8859-15
 	else
@@ -76,6 +78,4 @@ if has('unix')
 	" I have a bigger screen now...
 	set lines=75 columns=100
 	"set lines=66 columns=100
-elseif has('macunix')
-	set guifont=Monaco:h12
 endif
