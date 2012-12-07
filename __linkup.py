@@ -1,27 +1,30 @@
 #! /usr/bin/env python
 
-"""Make links for my .vimrc and .gvimrc in the directory above this one.
+"""Make links for my .vimrc and .gvimrc in my hom directory
 """
 
 import sys
 import os
 
 def linkup():
+    home = os.path.expandvars("${HOME}")
     this_dir, this_file = os.path.split(__file__)
     this_dir = os.path.abspath(this_dir)
-    parent_dir = os.path.split(this_dir)[0]
 
-    for filename in ('dot.vimrc', 'dot.gvimrc'):
+    files = os.listdir(this_dir)
+    for filename in files:
         base, name = os.path.splitext(filename)
-        try:
-            os.symlink(os.path.join(this_dir, filename),
-                       os.path.join(parent_dir, name))
-            print 'Linked %s'%name
-        except OSError as e:
-            if e.errno == 17:
-                print 'Entry already exists for',name
-            else:
-                print e, filename
+        if base == "dot" and not name.endswith("~"):
+            this = os.path.join(this_dir, filename)
+            that = os.path.join(home, name)
+            try:
+                os.symlink(this, that)
+                print 'Linked %s to %s'%(that, this)
+            except OSError as e:
+                if e.errno == 17:
+                    print 'Entry already exists for',name
+                else:
+                    print e, filename
 
 if __name__ == '__main__':
     args = sys.argv[1:]

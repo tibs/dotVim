@@ -283,11 +283,14 @@ function! EndLine()
     " If the filetype is already "rst" (presumably because my .vimrc made it
     " so), then embed that into the file as well (naughty but nice)
     if &filetype == "rst"
-	call append(line('$'), ".. vim: set filetype=rst tabstop=8 softtabstop=2 shiftwidth=2 expandtab:")
-	set tabstop=8 softtabstop=2 shiftwidth=2 expandtab
+	  call append(line('$'), ".. vim: set filetype=rst tabstop=8 softtabstop=2 shiftwidth=2 expandtab:")
+	  set tabstop=8 softtabstop=2 shiftwidth=2 expandtab
+    elseif &filetype == "txt"
+	  call append(line('$'), ".. vim: set filetype=rst tabstop=8 softtabstop=2 shiftwidth=2 expandtab:")
+	  set tabstop=8 softtabstop=2 shiftwidth=2 expandtab
     else
-	call append(line('$'), "# vim: set tabstop=8 softtabstop=4 shiftwidth=4 expandtab:")
-	set tabstop=8 softtabstop=4 shiftwidth=4 expandtab
+	  call append(line('$'), "# vim: set tabstop=8 softtabstop=4 shiftwidth=4 expandtab:")
+	  set tabstop=8 softtabstop=4 shiftwidth=4 expandtab
     endif
 endfunction
 
