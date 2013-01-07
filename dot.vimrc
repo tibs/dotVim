@@ -122,22 +122,6 @@ if has("autocmd")
 
   " For all text files set 'textwidth' to 78 characters.
   autocmd FileType text setlocal textwidth=78
-
-  " Assume that .txt files are reStructuredText, and assert a text width
-  " (I want them to be text, which they're not automatically detected as,
-  " and if I'm going to have text, I might as well have reST)
-  " Note that I'm doing this *here* rather than in ~/.vim/filetype.vim
-  " so that Vim can already have had a chance to detect things like
-  " configuration files, etc. (for instance, it thinks my timesheet.txt
-  " file is a configuration file, which is not silly)
-  " Also note that Vim already has support for reStructuredText as
-  " filetype 'rst' - I've gone with 'rest' mainly because I discovered
-  " that after I'd done so, and also because the newer syntax file for
-  " reST is called 'rest.vim'. However, I may undo that decision, and
-  " rename or link ~/.vim/syntax/rest.vim as ~/.vim/syntax/rst.vim...
-  "autocmd BufRead,BufNewFile *.txt,README*,INSTALL* setfiletype rest
-  "autocmd FileType rest setlocal textwidth=78
-  autocmd BufRead,BufNewFile *.txt,README*,INSTALL* setfiletype rst
   autocmd FileType rst setlocal textwidth=78
 
   " I find it easier to read Makefiles with 8 character tabs
