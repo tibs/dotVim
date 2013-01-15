@@ -62,6 +62,8 @@ if version >= 500
   highlight NonText guibg=grey80
   highlight Constant gui=NONE guibg=grey95
   highlight Special gui=NONE guibg=grey95
+  highlight  StatusLine term=bold,reverse cterm=NONE ctermfg=White ctermbg=Black gui=NONE guifg=White guibg=Black
+  highlight  StatusLineNC term=bold,reverse cterm=NONE ctermfg=White ctermbg=Black gui=NONE guifg=White guibg=DarkSlateGray
 
 endif
 
