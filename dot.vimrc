@@ -13,6 +13,10 @@ endif
 " This must be first, because it changes other options as a side effect.
 set nocompatible
 
+" On Windows, it defaults to reading this in latin-1, which doesn't allow
+" for some characters we use in listchars
+scriptencoding utf-8
+
 " =============================================================================
 " VUNDLE START
 " =============================================================================
@@ -172,8 +176,37 @@ endif
 " Enable showing of "listchars" with 'set list' (F4 will work if the Cream
 " plugin is provided)
 "
-"set listchars=tab:\|\ ,eol:¶,trail:·,precedes:‹,extends:›
-set listchars=tab:\|�,trail:�,precedes:<,extends:>
+" eol:c				character to show at end of line
+" tab:xy			first char at tab posn, second to fill after it
+" trail:c			trailing spaces
+" extends:c			if wrap is off, show at right of line that extends right
+" precedes:c		if wrap is off, show at left of line that extends left
+" conceal:c			if conceallevel is 1, show in place of concealed text
+" nbsp:c			show for a non-breaking space
+"
+" NonText    highlight is used for eol, extends and precedes
+" SpecialKey highlight is used for nbsp, tab and trail
+"
+" May want scriptencoding utf-8 at the top of the .vimrc
+"
+" Ideas are:
+"
+" eol:¶
+" tab:»·
+" trail:·
+" extends:»,precedes:«
+" nbsp:¬				- u00ac
+" tab:⡁· 				- u2841 and middle dot
+"
+" Unicode characters can be inserted by typing ctrl-vu followed by the 4 digit
+" hexadecimal code.
+"
+" newline:⤦				- u2926
+" tab:➟					- u279f
+" tab:▸					- u25b8
+"
+"set listchars=tab:\|\ ,eol:Â¶,trail:Â·,precedes:â¹,extends:âº
+set listchars=tab:\|·,trail:·,precedes:<,extends:>,nbsp:◇
 
 if has("autocmd")
   " Show trailing whitepace and spaces before a tab:
