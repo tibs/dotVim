@@ -302,9 +302,12 @@ function! EndLine()
     if &filetype == "rst"
 	  call append(line('$'), ".. vim: set filetype=rst tabstop=8 softtabstop=2 shiftwidth=2 expandtab:")
 	  set tabstop=8 softtabstop=2 shiftwidth=2 expandtab
+    elseif &filetype == "text"
+	  call append(line('$'), ".. vim: set filetype=rst tabstop=8 softtabstop=2 shiftwidth=2 expandtab:")
+	  set filetype=rst tabstop=8 softtabstop=2 shiftwidth=2 expandtab
     elseif &filetype == "txt"
 	  call append(line('$'), ".. vim: set filetype=rst tabstop=8 softtabstop=2 shiftwidth=2 expandtab:")
-	  set tabstop=8 softtabstop=2 shiftwidth=2 expandtab
+	  set filetype=rst tabstop=8 softtabstop=2 shiftwidth=2 expandtab
     else
 	  call append(line('$'), "# vim: set tabstop=8 softtabstop=4 shiftwidth=4 expandtab:")
 	  set tabstop=8 softtabstop=4 shiftwidth=4 expandtab
@@ -314,6 +317,25 @@ endfunction
 " Insert a common trailing line at the end of a text file
 nmap <leader>endline :call EndLine()<Return>
 
+" Show line numbers
+set number
+
+" Make all my backup files go into a common directory
+"
+"   For Unix and Win32, if a directory ends in two path separators "//" or
+"   "\", the swap file name will be built from the complete path to the file
+"   with all path separators substituted to percent '%' signs. This will
+"   ensure file name uniqueness in the preserve directory.
+"
+set backupdir=~/.vim-backups//,.
+set directory=~/.vim-backups//,.
+
 " Experimentally, make ESC remove incremental search (hlsearch) highlighting, as well
 " as what it normally does - i.e., do nohlsearch
 "nnoremap <esc> :noh<return><esc>
+
+" Inspired by sensible.vim (at https://github.com/tpope/vim-sensible/)
+" Load matchit.vim, but only if the user hasn't installed a newer version.
+if !exists('g:loaded_matchit') && findfile('plugin/matchit.vim', &rtp) ==# ''
+  runtime! macros/matchit.vim
+endif
