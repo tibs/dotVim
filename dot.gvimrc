@@ -80,6 +80,13 @@ elseif has('unix')
 	" I have a bigger screen now...
 	set lines=75 columns=100
 	"set lines=66 columns=100
+else
+	" Lucida Console is quite nice, but I have trouble distinguishing full
+	" stop and comma, at least on Windows XP. Consolas is a bit "loose",
+	" but the characters are terribly clear. So practicality beats purity.
+	"set guifont=Lucida\ Console
+	set guifont=Consolas
+	set lines=50 columns=100
 endif
 
 " Experimentally, always show line numbers
