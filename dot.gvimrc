@@ -81,3 +81,6 @@ elseif has('unix')
 	set lines=75 columns=100
 	"set lines=66 columns=100
 endif
+
+" Experimentally, always show line numbers
+set number

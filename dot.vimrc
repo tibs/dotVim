@@ -33,23 +33,58 @@ if version >= 703
   " Start off with vundle itself
   Bundle 'gmarik/vundle'
   " Then various things mirrored at http://vim-scripts.org/vim/scripts.html
+
+  " Switch between buffers
   Bundle 'bufexplorer.zip'
+
   " VimReStructuredText
   Bundle 'VST'
+
   " Yet another indent finder, almost
   Bundle 'yaifa.vim'
-  "
+
+  " Emacs like gdb interface to cterm vim
   Bundle 'vimgdb'
+
+  " Enhanced version of the python syntax highlighting script
   Bundle 'python.vim--Vasiliev'
-  Bundle 'RST-Tables'
+
+  "Bundle 'RST-Tables'
+  " It looks as if vim-tables is more sophisticated than RST-Tables
+  "   http://dhruvasagar.com/2013/03/17/vim-table-mode
+  " It depends on Tabular, so...
+  Bundle 'tabular'
+  Bundle 'vim-tables'
+
   Bundle 'scratch'
+
+  " Tree-view of the undo history
+  "   http://sjl.bitbucket.org/gundo.vim/
+  Bundle 'gundo'
   
-  "Bundle 'pyflakes.vim'
+  " I really should include some sort of Python checking...
+  " First, "pip install flake8", then
+  "Bundle vim-flake8
+  " A Python omnicompletion utility
   "Bundle 'pysmell.vim'
+  " Or there's Syntastic
+  "   https://github.com/scrooloose/syntastic
+  " which then uses various tools for various languages (e.g., flake8,
+  " pyflakes or pylint for Python). See syntax_checkers/<filetype>.vim
+  " for a list of tools it uses
+  "Bundle 'Synastic'
   
+  " Directory Browser
   Bundle 'ls.vim'
+
+  " Show all lines in the buffer containing word (grep buffer)
   Bundle 'occur.vim'
+
+  " Easy session management for gvim
   Bundle 'sessions.vim--Boland'
+
+  " A plugin for visually displaying indent levels in Vim
+  "   https://github.com/nathanaelkane/vim-indent-guides
   Bundle 'Indent-Guides'
   
   " Colour scheme related
@@ -60,6 +95,13 @@ if version >= 703
   Bundle 'pyte'
   Bundle 'proton'
   Bundle 'sienna'
+
+  " Consider vim-abolish from Tim Pope: easily search for, substitute, and
+  " abbreviate multiple variants of a word
+  "   https://github.com/tpope/vim-abolish
+  "Bundle 'vim-abolish'
+  " Also, https://github.com/tpope/vim-scriptease, A Vim plugin for Vim plugins
+  "Bundle 'vim-scriptease
   
   filetype plugin indent on	" and this required at end of vundle stuff
 endif
