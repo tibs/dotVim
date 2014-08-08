@@ -21,109 +21,127 @@ scriptencoding utf-8
 " VUNDLE START
 " =============================================================================
 filetype on		" because sometimes on Mac OS X, off before on causes problems
-filetype off		" must do this before vundle business
+filetype off		" must do this before Vundle business
 
 " Vim 7.2 without some patch or other doesn't support current vundle.
 " The MacVim I was using was OK, but the Apple vim wasn't. So upgrade
 " the MavVim to 7.3 and test for that...
 if version >= 703
-  set rtp+=~/.vim/bundle/vundle/
-  call vundle#rc()
-  
+  " Set the runtime path to include Vundle
+  set rtp+=~/.vim/bundle/Vundle.vim
+  call vundle#begin()
+
   " Start off with vundle itself
-  Bundle 'gmarik/vundle'
+  Plugin 'gmarik/Vundle.vim'
   " Then various things mirrored at http://vim-scripts.org/vim/scripts.html
 
+  " I want pyflakes/pep8 checking, and the current recommended way to get
+  " this appears to be via Syntastic
+  "
+  " Remember to "pip install flake8" in the external environment...
+  "Plugin 'https://github.com/scrooloose/syntastic.git'
+
+  " The original pyflakes-vim is now pseudo-deprecated, as the author prefers
+  " syntastic, but it *is* still available, and in some ways the nicest
+  " solution
+  Plugin 'https://github.com/kevinw/pyflakes-vim'
+
+  " Or just use flake8
+  " <F7> to run the checker
+  "Plugin 'https://github.com/nvie/vim-flake8'
+
+  " flake8-vim actually uses frosted
+  "Plugin 'https://github.com/andviro/flake8-vim'
+
   " Switch between buffers
-  Bundle 'bufexplorer.zip'
+  "Plugin 'bufexplorer.zip'
 
   " VimReStructuredText
-  Bundle 'VST'
+  "Plugin 'VST'
 
   " Yet another indent finder, almost
-  Bundle 'yaifa.vim'
+  "Plugin 'yaifa.vim'
 
   " Emacs like gdb interface to cterm vim
-  Bundle 'vimgdb'
+  "Plugin 'vimgdb'
 
   " Enhanced version of the python syntax highlighting script
-  Bundle 'python.vim--Vasiliev'
+  "Plugin 'python.vim--Vasiliev'
 
-  "Bundle 'RST-Tables'
+  "Plugin 'RST-Tables'
   " It looks as if vim-tables is more sophisticated than RST-Tables
   "   http://dhruvasagar.com/2013/03/17/vim-table-mode
   " It depends on Tabular, so...
-  Bundle 'tabular'
-  Bundle 'vim-tables'
+  "Plugin 'tabular'
+  "Plugin 'vim-tables'
 
-  Bundle 'scratch'
+  "Plugin 'scratch'
 
   " Tree-view of the undo history
   "   http://sjl.bitbucket.org/gundo.vim/
-  Bundle 'gundo'
+  "Plugin 'gundo'
   
-  " I really should include some sort of Python checking...
-  " First, "pip install flake8", then
-  "Bundle vim-flake8
   " A Python omnicompletion utility
-  "Bundle 'pysmell.vim'
-  " Or there's Syntastic
-  "   https://github.com/scrooloose/syntastic
-  " which then uses various tools for various languages (e.g., flake8,
-  " pyflakes or pylint for Python). See syntax_checkers/<filetype>.vim
-  " for a list of tools it uses
-  "Bundle 'Synastic'
+  "Plugin 'pysmell.vim'
   
   " Directory Browser
-  Bundle 'ls.vim'
+  "Plugin 'ls.vim'
 
   " Show all lines in the buffer containing word (grep buffer)
-  Bundle 'occur.vim'
+  "Plugin 'occur.vim'
 
   " Easy session management for gvim
-  Bundle 'sessions.vim--Boland'
+  "Plugin 'sessions.vim--Boland'
 
   " A plugin for visually displaying indent levels in Vim
   "   https://github.com/nathanaelkane/vim-indent-guides
-  Bundle 'Indent-Guides'
+  "Plugin 'Indent-Guides'
   
   " Colour scheme related
   " First, a template for building one's own colour scheme
-  Bundle 'colorscheme_template.vim'
+  "Plugin 'colorscheme_template.vim'
   " Then some specific examples
-  Bundle 'habiLight'
-  Bundle 'pyte'
-  Bundle 'proton'
-  Bundle 'sienna'
+  "Plugin 'habiLight'
+  "Plugin 'pyte'
+  "Plugin 'proton'
+  "Plugin 'sienna'
 
   " Consider vim-abolish from Tim Pope: easily search for, substitute, and
   " abbreviate multiple variants of a word
   "   https://github.com/tpope/vim-abolish
-  "Bundle 'vim-abolish'
+  "Plugin 'vim-abolish'
   " Also, https://github.com/tpope/vim-scriptease, A Vim plugin for Vim plugins
-  "Bundle 'vim-scriptease
+  "Plugin 'vim-scriptease
   
+  call vundle#end()
   filetype plugin indent on	" and this required at end of vundle stuff
 endif
 
 " Brief help
 "
-" :BundleInstall  - install bundles (won't update installed)
-" :BundleInstall! - update if installed
+" :PluginInstall  - install bundles (won't update installed)
+" :PluginInstall! - update if installed
 "
-" :Bundles foo    - search for foo
-" :Bundles! foo   - refresh cached list and search for foo
+" :Plugin foo    - search for foo
+" :Plugins! foo   - refresh cached list and search for foo
 "
-" :BundleClean    - confirm removal of unused bundles
-" :BundleClean!   - remove without confirmation
+" :PluginClean    - confirm removal of unused bundles
+" :PluginClean!   - remove without confirmation
+"
+" or, from the command line, something like:
+"
+"     vim +PluginInstall +qall
 "
 " see :h vundle for more details
 " or wiki for FAQ
-" Note: comments after Bundle command are not allowed..
+" Note: comments after Plugin command are not allowed..
 " =============================================================================
 " VUNDLE END
 " =============================================================================
 
+" Choose a specific Python syntax checker...
+" By default, checks are run when the file being edited is written out.
+let g:syntastic_python_checkers=['flake8']
 
 " allow backspacing over everything in insert mode
 set backspace=indent,eol,start
@@ -250,10 +268,31 @@ endif
 "set listchars=tab:\|\ ,eol:Â¶,trail:Â·,precedes:â¹,extends:âº
 set listchars=tab:\|·,trail:·,precedes:<,extends:>,nbsp:◇
 
+" Stop vim auto-indenting when pasting
+" This is ignored by gvim, which can tell when the user is pasting stuff
+set paste
+
 if has("autocmd")
+
+  " From http://vim.wikia.com/wiki/Highlight_unwanted_spaces:
+  "
+  "   If your goal is to:
+  "
+  "    1. highlight trailing whitespace in red
+  "    2. have this highlighting not appear whilst you are typing in insert mode
+  "    3. have the highlighting of whitespace apply when you open new buffers 
+  "
+  "   then the following 6 commands are what you should put into your .vimrc.
+  "highlight ExtraWhitespace ctermbg=red guibg=red
+  "match ExtraWhitespace /\s\+$/
+  "autocmd BufWinEnter * match ExtraWhitespace /\s\+$/
+  "autocmd InsertEnter * match ExtraWhitespace /\s\+\%#\@<!$/
+  "autocmd InsertLeave * match ExtraWhitespace /\s\+$/
+  "autocmd BufWinLeave * call clearmatches()
+  "   
   " Show trailing whitepace and spaces before a tab:
-  ":autocmd ColorScheme * highlight ExtraWhitespace ctermbg=red guibg=red
-  ":autocmd Syntax * syn match ExtraWhitespace /\s\+$\| \+\ze\t/ containedin=ALL
+  "":autocmd ColorScheme * highlight ExtraWhitespace ctermbg=red guibg=red
+  "":autocmd Syntax * syn match ExtraWhitespace /\s\+$\| \+\ze\t/ containedin=ALL
   :autocmd Syntax * syn match Todo /\s\+$\| \+\ze\t/ containedin=ALL
 
   " In C files, I'd like to highlight all characters beyound virtual
