@@ -271,7 +271,7 @@ function! EndLine()
 	  set tabstop=8 softtabstop=2 shiftwidth=2 expandtab
     elseif &filetype == "txt"
 	  call append(line('$'), ".. vim: set filetype=rst tabstop=8 softtabstop=2 shiftwidth=2 expandtab:")
-	  set tabstop=8 softtabstop=2 shiftwidth=2 expandtab
+	  set tabstop=8 softtabstop=2 shiftwidth=2 expandtab filetype=rst
     else
 	  call append(line('$'), "# vim: set tabstop=8 softtabstop=4 shiftwidth=4 expandtab:")
 	  set tabstop=8 softtabstop=4 shiftwidth=4 expandtab
