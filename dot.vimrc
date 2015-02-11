@@ -80,10 +80,10 @@ if version >= 703
   " Tree-view of the undo history
   "   http://sjl.bitbucket.org/gundo.vim/
   "Plugin 'gundo'
-  
+
   " A Python omnicompletion utility
   "Plugin 'pysmell.vim'
-  
+
   " Directory Browser
   "Plugin 'ls.vim'
 
@@ -96,7 +96,7 @@ if version >= 703
   " A plugin for visually displaying indent levels in Vim
   "   https://github.com/nathanaelkane/vim-indent-guides
   "Plugin 'Indent-Guides'
-  
+
   " Colour scheme related
   " First, a template for building one's own colour scheme
   "Plugin 'colorscheme_template.vim'
@@ -112,7 +112,7 @@ if version >= 703
   "Plugin 'vim-abolish'
   " Also, https://github.com/tpope/vim-scriptease, A Vim plugin for Vim plugins
   "Plugin 'vim-scriptease
-  
+
   call vundle#end()
   filetype plugin indent on	" and this required at end of vundle stuff
 endif
@@ -220,6 +220,10 @@ endif " has("autocmd")
 "
 " My terminal doesn't seem to provide t_Co, but I normally use colour
 " terminals, so let's assume the best:
+set t_Co=256	" Really, assert we've got 256 colours (!)
+" See :help xterm-color for more information on this, and how to do it in
+" a more resilient way.
+" Also note we need to set t_Co before doing syntax on
 syntax on
 " I still want hightlighting of the last used search pattern
 set hlsearch
@@ -340,6 +344,8 @@ if has("autocmd")
   "
   if version >= 703
 	  set colorcolumn=80
+	  " The ctermbg colour is by experimentation!
+	  highlight colorcolumn term=reverse ctermbg=217 guibg=LightRed
   else
 	  " Alec suggests that:
 	  autocmd FileType c,cpp exec 'match rightMargin /.\%>80v/'
