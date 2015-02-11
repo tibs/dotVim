@@ -265,12 +265,47 @@ endif
 " tab:➟					- u279f
 " tab:▸					- u25b8
 "
-"set listchars=tab:\|\ ,eol:Â¶,trail:Â·,precedes:â¹,extends:âº
 set listchars=tab:\|·,trail:·,precedes:<,extends:>,nbsp:◇
+"
+" or:
+"   set listchars=tab:⇥\ ,nbsp:·,trail:␣,extends:▸,precedes:◂
+" or:
+"   set list listchars=tab:»¯,trail:°,extends:»,precedes:«
+"   highlight NonText ctermfg=DarkRed
+" or just:
+"   set listchars=tab:>\ ,trail:-,extends:>,precedes:<,nbsp:+
 
 " Stop vim auto-indenting when pasting
 " This is ignored by gvim, which can tell when the user is pasting stuff
-set paste
+"
+"set paste
+"
+" However, note that 'set paste' stops cmap from working, and thus my '%/'
+" binding won't work. An alternative is to have a way to toggle pastemode,
+" such as:
+"
+"  set pastetoggle=<F10>
+"
+" or even:
+"
+"  map <F10> :set paste!<CR>
+"
+" However, http://stackoverflow.com/questions/5585129 suggests that modern
+" terminals that support "bracketed paste mode" may know how to tell the
+" editor what to do, in which case we can do:
+if &term =~ "xterm.*"
+    let &t_ti = &t_ti . "\e[?2004h"
+    let &t_te = "\e[?2004l" . &t_te
+    function XTermPasteBegin(ret)
+        set pastetoggle=<Esc>[201~
+        set paste
+        return a:ret
+    endfunction
+    map <expr> <Esc>[200~ XTermPasteBegin("i")
+    imap <expr> <Esc>[200~ XTermPasteBegin("")
+    cmap <Esc>[200~ <nop>
+    cmap <Esc>[201~ <nop>
+endif
 
 if has("autocmd")
 
