@@ -233,9 +233,17 @@ set hidden              " buffer becomes 'hidden' when abandoned
 set ignorecase		" ignore case in searching
 set smartcase		" except when upper and lower case letters are mixed
 set laststatus=2        " always have a status line, even with only one window
+" Support the mouse, if possible, in non-GUI mode
 if has('mouse')
-	set mouse=a	" support the mouse, if possible, in non-GUI mode
+    set mouse=a
 endif
+" See http://stackoverflow.com/questions/7000960 for some background on how
+" this changed with/after vim 7.3.632
+if has("mouse_sgr")
+    set ttymouse=sgr
+else
+    set ttymouse=xterm2
+end
 
 " Enable showing of "listchars" with 'set list' (F4 will work if the Cream
 " plugin is provided)
@@ -297,19 +305,65 @@ set listchars=tab:\|·,trail:·,precedes:<,extends:>,nbsp:◇
 " However, http://stackoverflow.com/questions/5585129 suggests that modern
 " terminals that support "bracketed paste mode" may know how to tell the
 " editor what to do, in which case we can do:
-if &term =~ "xterm.*"
-    let &t_ti = &t_ti . "\e[?2004h"
-    let &t_te = "\e[?2004l" . &t_te
-    function XTermPasteBegin(ret)
-        set pastetoggle=<Esc>[201~
-        set paste
-        return a:ret
-    endfunction
-    map <expr> <Esc>[200~ XTermPasteBegin("i")
-    imap <expr> <Esc>[200~ XTermPasteBegin("")
-    cmap <Esc>[200~ <nop>
-    cmap <Esc>[201~ <nop>
+"if &term =~ "xterm.*"
+"    let &t_ti = &t_ti . "\e[?2004h"
+"    let &t_te = "\e[?2004l" . &t_te
+"    function XTermPasteBegin(ret)
+"        set pastetoggle=<Esc>[201~
+"        set paste
+"        return a:ret
+"    endfunction
+"    map <expr> <Esc>[200~ XTermPasteBegin("i")
+"    imap <expr> <Esc>[200~ XTermPasteBegin("")
+"    cmap <Esc>[200~ <nop>
+"    cmap <Esc>[201~ <nop>
+"endif
+"
+" The following is taken from https://github.com/ConradIrwin/vim-bracketed-paste/blob/master/plugin/bracketed-paste.vim
+" ============================================================================
+" Code from:
+" http://stackoverflow.com/questions/5585129/pasting-code-into-terminal-window-into-vim-on-mac-os-x
+" then https://coderwall.com/p/if9mda
+" and then https://github.com/aaronjensen/vimfiles/blob/59a7019b1f2d08c70c28a41ef4e2612470ea0549/plugin/terminaltweaks.vim
+" to fix the escape time problem with insert mode.
+"
+" Docs on bracketed paste mode:
+" http://www.xfree86.org/current/ctlseqs.html
+" Docs on mapping fast escape codes in vim
+" http://vim.wikia.com/wiki/Mapping_fast_keycodes_in_terminal_Vim
+
+if !exists("g:bracketed_paste_tmux_wrap")
+  let g:bracketed_paste_tmux_wrap = 1
 endif
+
+function! WrapForTmux(s)
+  if !g:bracketed_paste_tmux_wrap || !exists('$TMUX')
+    return a:s
+  endif
+
+  let tmux_start = "\<Esc>Ptmux;"
+  let tmux_end = "\<Esc>\\"
+
+  return tmux_start . substitute(a:s, "\<Esc>", "\<Esc>\<Esc>", 'g') . tmux_end
+endfunction
+
+let &t_SI .= WrapForTmux("\<Esc>[?2004h")
+let &t_EI .= WrapForTmux("\<Esc>[?2004l")
+
+function! XTermPasteBegin(ret)
+  set pastetoggle=<f29>
+  set paste
+  return a:ret
+endfunction
+
+execute "set <f28>=\<Esc>[200~"
+execute "set <f29>=\<Esc>[201~"
+map <expr> <f28> XTermPasteBegin("i")
+imap <expr> <f28> XTermPasteBegin("")
+vmap <expr> <f28> XTermPasteBegin("c")
+cmap <f28> <nop>
+cmap <f29> <nop>
+" ============================================================================
 
 if has("autocmd")
 
@@ -438,6 +492,16 @@ endfunction
 
 " Insert a common trailing line at the end of a text file
 nmap <leader>endline :call EndLine()<Return>
+
+function! PDB()
+    " Insert the PDB magic line
+    call append(line('.'), "import pdb; pdb.set_trace()")
+endfunction
+
+" Insert our PDB magic on the next line
+" ...it won't be indented correctly, but it helps me remember the method to
+" call
+nmap <leader>PDB :call PDB()<Return>
 
 " Show line numbers
 set number
