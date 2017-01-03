@@ -31,8 +31,8 @@ if version >= 703
   set rtp+=~/.vim/bundle/Vundle.vim
   call vundle#begin()
 
-  " Start off with vundle itself
-  Plugin 'gmarik/Vundle.vim'
+  " Let Vundle manage itself - this is required
+  Plugin 'VundleVim/Vundle.vim'
   " Then various things mirrored at http://vim-scripts.org/vim/scripts.html
 
   " I want pyflakes/pep8 checking, and the current recommended way to get
