@@ -35,6 +35,9 @@ if version >= 703
   Plugin 'VundleVim/Vundle.vim'
   " Then various things mirrored at http://vim-scripts.org/vim/scripts.html
 
+  " Let's try using Tim Pope's fugitive git wraper
+  Plugin 'tpope/vim-fugitive'
+
   " I want pyflakes/pep8 checking, and the current recommended way to get
   " this appears to be via Syntastic
   "
@@ -435,21 +438,35 @@ function! FileFormatFlag()
 	endif
 endfunction
 
+" Return:
+" * '(<current git branch>)' if there is one
+" * '(<8 chars of the SHA1>)' of the current commit if there is not
+" * '' if we're not in git
+function! GitBranch()
+	let s:branch = fugitive#head(8)
+	if s:branch == ''
+		return ''
+	else
+		return '(' . s:branch . ')'
+	endif
+endfunction
+
 " The standard statusline doesn't show the filetype, or whether the
 " file contains non-standard line endings. Unfortunately, modifying
 " the statusline means redefining the whole thing
 set statusline=
-"set statusline+=%-3.3n\ 		" buffer number, space=separator
-set statusline+=%<			" truncate (following) on left
-set statusline+=%f\ 			" file name, space=separator
-set statusline+=%y			" [filetype]
-set statusline+=%m			" [modified]
-set statusline+=%r			" [readonly]
-" set statusline+=\<%{&fileformat}\>	" <fileformat>
-set statusline+=%{FileFormatFlag()}	" <fileformat> if not right for this platform
-set statusline+=\ 			" don't let the preceding run into the following
-set statusline+=%=			" right align the following
-set statusline+=%-14.(%l,%c%V%)\ %P	" ruler
+"set statusline+=%-3.3n\ 		    " buffer number, space=separator
+set statusline+=%<			    " truncate (following) on left
+set statusline+=%f\ 			    " file name, space=separator
+set statusline+=%{GitBranch()}		    " (<branch>) or (<sha1[:8]>) or nothing
+set statusline+=%y			    " [<filetype>]
+set statusline+=%m			    " [+] if modified
+set statusline+=%r			    " [RO] if readonly
+" set statusline+=\<%{&fileformat}\>	    " <fileformat>
+set statusline+=%{FileFormatFlag()}	    " <fileformat> if not right for this platform
+set statusline+=\ 			    " don't let the preceding run into the following
+set statusline+=%=			    " right align the following
+set statusline+=%-14.(%l,%c%V%)\ %P	    " ruler
 " (basically, I've taken the example from ``:help statusline`` and replaced
 " the ``%h`` by ``%y``, and added the display of the ``fileformat``, to allow
 " me to tell when I've got CR/LF files...)
