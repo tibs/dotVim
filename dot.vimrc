@@ -116,6 +116,20 @@ if version >= 703
   " Also, https://github.com/tpope/vim-scriptease, A Vim plugin for Vim plugins
   "Plugin 'vim-scriptease
 
+  " A better (one hopes) Python indentation mode.
+  " It tries to do the following properly:
+  "
+  " foobar(foo,
+  "     bar)
+  "
+  " and:
+  "
+  " foobar(
+  "    foo,
+  "    bar
+  " )
+  Plugin 'Vimjas/vim-python-pep8-indent'
+
   call vundle#end()
   filetype plugin indent on	" and this required at end of vundle stuff
 endif
