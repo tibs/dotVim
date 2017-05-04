@@ -47,7 +47,7 @@ if version >= 703
   " The original pyflakes-vim is now pseudo-deprecated, as the author prefers
   " syntastic, but it *is* still available, and in some ways the nicest
   " solution
-  Plugin 'https://github.com/kevinw/pyflakes-vim'
+  "Plugin 'https://github.com/kevinw/pyflakes-vim'
 
   " Or just use flake8
   " <F7> to run the checker
@@ -55,6 +55,12 @@ if version >= 703
 
   " flake8-vim actually uses frosted
   "Plugin 'https://github.com/andviro/flake8-vim'
+
+  if version >= 800
+    " ALE is asynchronous linting, so needs vim 8 to work
+    Plugin 'https://github.com/w0rp/ale.git'
+    let g:ale_linters = { 'python': ['flake8'], }
+  endif
 
   " Switch between buffers
   "Plugin 'bufexplorer.zip'
