@@ -60,6 +60,13 @@ if version >= 703
     " ALE is asynchronous linting, so needs vim 8 to work
     Plugin 'https://github.com/w0rp/ale.git'
     let g:ale_linters = { 'python': ['flake8'], }
+    " Make it obvious which linter is reporting a problem, in case there are
+    " multiple linters being run
+    let g:ale_echo_msg_format = '%linter% says %s'
+    " Set command line options for flake8
+    let g:ale_python_flake8_options = '--max-line-length=120'
+    " And let's always have the sign gutter, to stop text jumping around
+    let g:ale_sign_column_always = 1
   endif
 
   " Switch between buffers
