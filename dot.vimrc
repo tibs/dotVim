@@ -17,6 +17,12 @@ set nocompatible
 " for some characters we use in listchars
 scriptencoding utf-8
 
+" Vim wants a Posix compatible shell, which fish is not.
+" Note that this will also affect the shell launched by ``:sh[ell]``
+if &shell =~# 'fish$'
+    set shell=sh
+endif
+
 " =============================================================================
 " VUNDLE START
 " =============================================================================
@@ -142,6 +148,9 @@ if version >= 703
   "    bar
   " )
   Plugin 'Vimjas/vim-python-pep8-indent'
+
+  " Support for fish shell
+  Plugin 'dag/vim-fish'
 
   call vundle#end()
   filetype plugin indent on	" and this required at end of vundle stuff
