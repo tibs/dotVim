@@ -17,6 +17,12 @@ set nocompatible
 " for some characters we use in listchars
 scriptencoding utf-8
 
+" Vim wants a Posix compatible shell, which fish is not.
+" Note that this will also affect the shell launched by ``:sh[ell]``
+if &shell =~# 'fish$'
+    set shell=sh
+endif
+
 " =============================================================================
 " VUNDLE START
 " =============================================================================
@@ -35,7 +41,7 @@ if version >= 703
   Plugin 'VundleVim/Vundle.vim'
   " Then various things mirrored at http://vim-scripts.org/vim/scripts.html
 
-  " Let's try using Tim Pope's fugitive git wraper
+  " Let's try using Tim Pope's fugitive git wrapper
   Plugin 'tpope/vim-fugitive'
 
   " I want pyflakes/pep8 checking, and the current recommended way to get
@@ -68,6 +74,12 @@ if version >= 703
     " And let's always have the sign gutter, to stop text jumping around
     let g:ale_sign_column_always = 1
   endif
+
+  " jedi for vim
+  Plugin 'https://github.com/davidhalter/jedi-vim.git'
+
+  " Support for fish shell
+  Plugin 'dag/vim-fish'
 
   " Switch between buffers
   "Plugin 'bufexplorer.zip'
@@ -557,8 +569,26 @@ set number
 "   with all path separators substituted to percent '%' signs. This will
 "   ensure file name uniqueness in the preserve directory.
 "
+let swap_dir = expand("~/.vim-backups")
+if !isdirectory(swap_dir)
+  call mkdir(swap_dir)
+endif
 set backupdir=~/.vim-backups//,.
 set directory=~/.vim-backups//,.
+
+" An alternative, from
+"    https://www.reddit.com/r/vim/comments/7uac23/are_swap_files_necessary/
+" is:
+"
+"    Personally I would suggest you turn off swap files
+"        set noswapfile
+"    enable autoread, so vim automatically updates the file if it has been
+"    changed elsewhere
+"        set autoread
+"    and trigger autoread everytime you focus the window or enter the buffer
+"        autocmd! FocusGained,BufEnter * checktime
+"    Now you can edit a file in two places at once, and everytime you switch
+"    focus to another pane in tmux the changes will be updated accordingly.
 
 " Experimentally, make ESC remove incremental search (hlsearch) highlighting, as well
 " as what it normally does - i.e., do nohlsearch
