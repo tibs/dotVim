@@ -155,9 +155,6 @@ if version >= 703
   " )
   Plugin 'Vimjas/vim-python-pep8-indent'
 
-  " Support for fish shell
-  Plugin 'dag/vim-fish'
-
   call vundle#end()
   filetype plugin indent on	" and this required at end of vundle stuff
 endif
