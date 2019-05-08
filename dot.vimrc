@@ -456,9 +456,11 @@ let java_space_errors = 1
 let python_highlight_space_errors = 1
 let python_highlight_indent_errors = 1
 
-" From the comments to Tip 2, %/ can be used in command mode to insert the
-" current file's directory
-cmap %/ <C-R>=expand("%:p:h")."/"<cr>
+" From the comments to Tip 2 (I don't seem to have a link to that),
+" %/ can be used in command mode to insert the current file's directory
+" However, that has problems when I'm using Emacs in Evil mode, whereas
+" ^/ is OK, so let's change to that here as well.
+cmap ^/ <C-R>=expand("%:p:h")."/"<cr>
 
 if has('unix')
 	let s:running_as = 'unix'
@@ -561,6 +563,9 @@ nmap <leader>PDB :call PDB()<Return>
 
 " Show line numbers
 set number
+
+" By default, don't fold the code (use zc to restore)
+set nofoldenable
 
 " Make all my backup files go into a common directory
 "
