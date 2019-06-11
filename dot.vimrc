@@ -459,8 +459,8 @@ let python_highlight_indent_errors = 1
 " From the comments to Tip 2 (I don't seem to have a link to that),
 " %/ can be used in command mode to insert the current file's directory
 " However, that has problems when I'm using Emacs in Evil mode, whereas
-" ^/ is OK, so let's change to that here as well.
-cmap ^/ <C-R>=expand("%:p:h")."/"<cr>
+" £/ is OK, so let's change to that here as well.
+cmap £/ <C-R>=expand("%:p:h")."/"<cr>
 
 if has('unix')
 	let s:running_as = 'unix'
