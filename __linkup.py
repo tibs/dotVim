@@ -13,7 +13,13 @@ def linkup():
 
     files = os.listdir(this_dir)
     for filename in files:
-        base, name = os.path.splitext(filename)
+        # To allow for names like dot.tmux.conf, we can't just use
+        # os.path.splitext
+        parts = filename.split('.')
+        if len(parts) == 1:
+            continue
+        base = parts[0]
+        name = '.' + '.'.join(parts[1:])
         if base == "dot" and not name.endswith("~"):
             this = os.path.join(this_dir, filename)
             that = os.path.join(home, name)
