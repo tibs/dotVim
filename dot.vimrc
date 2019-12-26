@@ -17,6 +17,12 @@ set nocompatible
 " for some characters we use in listchars
 scriptencoding utf-8
 
+" Vim wants a Posix compatible shell, which fish is not.
+" Note that this will also affect the shell launched by ``:sh[ell]``
+if &shell =~# 'fish$'
+    set shell=sh
+endif
+
 " =============================================================================
 " VUNDLE START
 " =============================================================================
@@ -31,9 +37,12 @@ if version >= 703
   set rtp+=~/.vim/bundle/Vundle.vim
   call vundle#begin()
 
-  " Start off with vundle itself
-  Plugin 'gmarik/Vundle.vim'
+  " Let Vundle manage itself - this is required
+  Plugin 'VundleVim/Vundle.vim'
   " Then various things mirrored at http://vim-scripts.org/vim/scripts.html
+
+  " Let's try using Tim Pope's fugitive git wrapper
+  Plugin 'tpope/vim-fugitive'
 
   " I want pyflakes/pep8 checking, and the current recommended way to get
   " this appears to be via Syntastic
@@ -44,7 +53,7 @@ if version >= 703
   " The original pyflakes-vim is now pseudo-deprecated, as the author prefers
   " syntastic, but it *is* still available, and in some ways the nicest
   " solution
-  Plugin 'https://github.com/kevinw/pyflakes-vim'
+  "Plugin 'https://github.com/kevinw/pyflakes-vim'
 
   " Or just use flake8
   " <F7> to run the checker
@@ -52,6 +61,25 @@ if version >= 703
 
   " flake8-vim actually uses frosted
   "Plugin 'https://github.com/andviro/flake8-vim'
+
+  if version >= 800
+    " ALE is asynchronous linting, so needs vim 8 to work
+    Plugin 'https://github.com/w0rp/ale.git'
+    let g:ale_linters = { 'python': ['flake8'], }
+    " Make it obvious which linter is reporting a problem, in case there are
+    " multiple linters being run
+    let g:ale_echo_msg_format = '%linter% says %s'
+    " Set command line options for flake8
+    let g:ale_python_flake8_options = '--max-line-length=120'
+    " And let's always have the sign gutter, to stop text jumping around
+    let g:ale_sign_column_always = 1
+  endif
+
+  " jedi for vim
+  Plugin 'https://github.com/davidhalter/jedi-vim.git'
+
+  " Support for fish shell
+  Plugin 'dag/vim-fish'
 
   " Switch between buffers
   "Plugin 'bufexplorer.zip'
@@ -80,10 +108,10 @@ if version >= 703
   " Tree-view of the undo history
   "   http://sjl.bitbucket.org/gundo.vim/
   "Plugin 'gundo'
-  
+
   " A Python omnicompletion utility
   "Plugin 'pysmell.vim'
-  
+
   " Directory Browser
   "Plugin 'ls.vim'
 
@@ -96,7 +124,7 @@ if version >= 703
   " A plugin for visually displaying indent levels in Vim
   "   https://github.com/nathanaelkane/vim-indent-guides
   "Plugin 'Indent-Guides'
-  
+
   " Colour scheme related
   " First, a template for building one's own colour scheme
   "Plugin 'colorscheme_template.vim'
@@ -112,7 +140,21 @@ if version >= 703
   "Plugin 'vim-abolish'
   " Also, https://github.com/tpope/vim-scriptease, A Vim plugin for Vim plugins
   "Plugin 'vim-scriptease
-  
+
+  " A better (one hopes) Python indentation mode.
+  " It tries to do the following properly:
+  "
+  " foobar(foo,
+  "     bar)
+  "
+  " and:
+  "
+  " foobar(
+  "    foo,
+  "    bar
+  " )
+  Plugin 'Vimjas/vim-python-pep8-indent'
+
   call vundle#end()
   filetype plugin indent on	" and this required at end of vundle stuff
 endif
@@ -220,6 +262,10 @@ endif " has("autocmd")
 "
 " My terminal doesn't seem to provide t_Co, but I normally use colour
 " terminals, so let's assume the best:
+set t_Co=256	" Really, assert we've got 256 colours (!)
+" See :help xterm-color for more information on this, and how to do it in
+" a more resilient way.
+" Also note we need to set t_Co before doing syntax on
 syntax on
 " I still want hightlighting of the last used search pattern
 set hlsearch
@@ -229,9 +275,17 @@ set hidden              " buffer becomes 'hidden' when abandoned
 set ignorecase		" ignore case in searching
 set smartcase		" except when upper and lower case letters are mixed
 set laststatus=2        " always have a status line, even with only one window
+" Support the mouse, if possible, in non-GUI mode
 if has('mouse')
-	set mouse=a	" support the mouse, if possible, in non-GUI mode
+    set mouse=a
 endif
+" See http://stackoverflow.com/questions/7000960 for some background on how
+" this changed with/after vim 7.3.632
+if has("mouse_sgr")
+    set ttymouse=sgr
+else
+    set ttymouse=xterm2
+end
 
 " Enable showing of "listchars" with 'set list' (F4 will work if the Cream
 " plugin is provided)
@@ -265,12 +319,93 @@ endif
 " tab:➟					- u279f
 " tab:▸					- u25b8
 "
-"set listchars=tab:\|\ ,eol:Â¶,trail:Â·,precedes:â¹,extends:âº
 set listchars=tab:\|·,trail:·,precedes:<,extends:>,nbsp:◇
+"
+" or:
+"   set listchars=tab:⇥\ ,nbsp:·,trail:␣,extends:▸,precedes:◂
+" or:
+"   set list listchars=tab:»¯,trail:°,extends:»,precedes:«
+"   highlight NonText ctermfg=DarkRed
+" or just:
+"   set listchars=tab:>\ ,trail:-,extends:>,precedes:<,nbsp:+
 
 " Stop vim auto-indenting when pasting
 " This is ignored by gvim, which can tell when the user is pasting stuff
-set paste
+"
+"set paste
+"
+" However, note that 'set paste' stops cmap from working, and thus my '%/'
+" binding won't work. An alternative is to have a way to toggle pastemode,
+" such as:
+"
+"  set pastetoggle=<F10>
+"
+" or even:
+"
+"  map <F10> :set paste!<CR>
+"
+" However, http://stackoverflow.com/questions/5585129 suggests that modern
+" terminals that support "bracketed paste mode" may know how to tell the
+" editor what to do, in which case we can do:
+"if &term =~ "xterm.*"
+"    let &t_ti = &t_ti . "\e[?2004h"
+"    let &t_te = "\e[?2004l" . &t_te
+"    function XTermPasteBegin(ret)
+"        set pastetoggle=<Esc>[201~
+"        set paste
+"        return a:ret
+"    endfunction
+"    map <expr> <Esc>[200~ XTermPasteBegin("i")
+"    imap <expr> <Esc>[200~ XTermPasteBegin("")
+"    cmap <Esc>[200~ <nop>
+"    cmap <Esc>[201~ <nop>
+"endif
+"
+" The following is taken from https://github.com/ConradIrwin/vim-bracketed-paste/blob/master/plugin/bracketed-paste.vim
+" ============================================================================
+" Code from:
+" http://stackoverflow.com/questions/5585129/pasting-code-into-terminal-window-into-vim-on-mac-os-x
+" then https://coderwall.com/p/if9mda
+" and then https://github.com/aaronjensen/vimfiles/blob/59a7019b1f2d08c70c28a41ef4e2612470ea0549/plugin/terminaltweaks.vim
+" to fix the escape time problem with insert mode.
+"
+" Docs on bracketed paste mode:
+" http://www.xfree86.org/current/ctlseqs.html
+" Docs on mapping fast escape codes in vim
+" http://vim.wikia.com/wiki/Mapping_fast_keycodes_in_terminal_Vim
+
+if !exists("g:bracketed_paste_tmux_wrap")
+  let g:bracketed_paste_tmux_wrap = 1
+endif
+
+function! WrapForTmux(s)
+  if !g:bracketed_paste_tmux_wrap || !exists('$TMUX')
+    return a:s
+  endif
+
+  let tmux_start = "\<Esc>Ptmux;"
+  let tmux_end = "\<Esc>\\"
+
+  return tmux_start . substitute(a:s, "\<Esc>", "\<Esc>\<Esc>", 'g') . tmux_end
+endfunction
+
+let &t_SI .= WrapForTmux("\<Esc>[?2004h")
+let &t_EI .= WrapForTmux("\<Esc>[?2004l")
+
+function! XTermPasteBegin(ret)
+  set pastetoggle=<f29>
+  set paste
+  return a:ret
+endfunction
+
+execute "set <f28>=\<Esc>[200~"
+execute "set <f29>=\<Esc>[201~"
+map <expr> <f28> XTermPasteBegin("i")
+imap <expr> <f28> XTermPasteBegin("")
+vmap <expr> <f28> XTermPasteBegin("c")
+cmap <f28> <nop>
+cmap <f29> <nop>
+" ============================================================================
 
 if has("autocmd")
 
@@ -305,6 +440,8 @@ if has("autocmd")
   "
   if version >= 703
 	  set colorcolumn=80
+	  " The ctermbg colour is by experimentation!
+	  highlight colorcolumn term=reverse ctermbg=217 guibg=LightRed
   else
 	  " Alec suggests that:
 	  autocmd FileType c,cpp exec 'match rightMargin /.\%>80v/'
@@ -319,9 +456,11 @@ let java_space_errors = 1
 let python_highlight_space_errors = 1
 let python_highlight_indent_errors = 1
 
-" From the comments to Tip 2, %/ can be used in command mode to insert the
-" current file's directory
-cmap %/ <C-R>=expand("%:p:h")."/"<cr>
+" From the comments to Tip 2 (I don't seem to have a link to that),
+" %/ can be used in command mode to insert the current file's directory
+" However, that has problems when I'm using Emacs in Evil mode, whereas
+" £/ is OK, so let's change to that here as well.
+cmap £/ <C-R>=expand("%:p:h")."/"<cr>
 
 if has('unix')
 	let s:running_as = 'unix'
@@ -340,21 +479,35 @@ function! FileFormatFlag()
 	endif
 endfunction
 
+" Return:
+" * '(<current git branch>)' if there is one
+" * '(<8 chars of the SHA1>)' of the current commit if there is not
+" * '' if we're not in git
+function! GitBranch()
+	let s:branch = fugitive#head(8)
+	if s:branch == ''
+		return ''
+	else
+		return '(' . s:branch . ')'
+	endif
+endfunction
+
 " The standard statusline doesn't show the filetype, or whether the
 " file contains non-standard line endings. Unfortunately, modifying
 " the statusline means redefining the whole thing
 set statusline=
-"set statusline+=%-3.3n\ 		" buffer number, space=separator
-set statusline+=%<			" truncate (following) on left
-set statusline+=%f\ 			" file name, space=separator
-set statusline+=%y			" [filetype]
-set statusline+=%m			" [modified]
-set statusline+=%r			" [readonly]
-" set statusline+=\<%{&fileformat}\>	" <fileformat>
-set statusline+=%{FileFormatFlag()}	" <fileformat> if not right for this platform
-set statusline+=\ 			" don't let the preceding run into the following
-set statusline+=%=			" right align the following
-set statusline+=%-14.(%l,%c%V%)\ %P	" ruler
+"set statusline+=%-3.3n\ 		    " buffer number, space=separator
+set statusline+=%<			    " truncate (following) on left
+set statusline+=%f\ 			    " file name, space=separator
+set statusline+=%{GitBranch()}		    " (<branch>) or (<sha1[:8]>) or nothing
+set statusline+=%y			    " [<filetype>]
+set statusline+=%m			    " [+] if modified
+set statusline+=%r			    " [RO] if readonly
+" set statusline+=\<%{&fileformat}\>	    " <fileformat>
+set statusline+=%{FileFormatFlag()}	    " <fileformat> if not right for this platform
+set statusline+=\ 			    " don't let the preceding run into the following
+set statusline+=%=			    " right align the following
+set statusline+=%-14.(%l,%c%V%)\ %P	    " ruler
 " (basically, I've taken the example from ``:help statusline`` and replaced
 " the ``%h`` by ``%y``, and added the display of the ``fileformat``, to allow
 " me to tell when I've got CR/LF files...)
@@ -398,8 +551,21 @@ endfunction
 " Insert a common trailing line at the end of a text file
 nmap <leader>endline :call EndLine()<Return>
 
+function! PDB()
+    " Insert the PDB magic line
+    call append(line('.'), "import pdb; pdb.set_trace()")
+endfunction
+
+" Insert our PDB magic on the next line
+" ...it won't be indented correctly, but it helps me remember the method to
+" call
+nmap <leader>PDB :call PDB()<Return>
+
 " Show line numbers
 set number
+
+" By default, don't fold the code (use zc to restore)
+set nofoldenable
 
 " Make all my backup files go into a common directory
 "
@@ -408,8 +574,26 @@ set number
 "   with all path separators substituted to percent '%' signs. This will
 "   ensure file name uniqueness in the preserve directory.
 "
+let swap_dir = expand("~/.vim-backups")
+if !isdirectory(swap_dir)
+  call mkdir(swap_dir)
+endif
 set backupdir=~/.vim-backups//,.
 set directory=~/.vim-backups//,.
+
+" An alternative, from
+"    https://www.reddit.com/r/vim/comments/7uac23/are_swap_files_necessary/
+" is:
+"
+"    Personally I would suggest you turn off swap files
+"        set noswapfile
+"    enable autoread, so vim automatically updates the file if it has been
+"    changed elsewhere
+"        set autoread
+"    and trigger autoread everytime you focus the window or enter the buffer
+"        autocmd! FocusGained,BufEnter * checktime
+"    Now you can edit a file in two places at once, and everytime you switch
+"    focus to another pane in tmux the changes will be updated accordingly.
 
 " Experimentally, make ESC remove incremental search (hlsearch) highlighting, as well
 " as what it normally does - i.e., do nohlsearch

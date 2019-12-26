@@ -70,6 +70,8 @@ endif
 " My own additions
 if has('macunix')
 	set guifont=Monaco:h12
+	" I have a bigger screen now...
+	set lines=75 columns=121
 elseif has('unix')
 	if hostname() == "rocket.arg.sj.co.uk"
 		set guifont=-misc-fixed-medium-r-normal-*-*-120-*-*-c-*-iso8859-15
