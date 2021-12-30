@@ -23,141 +23,145 @@ if &shell =~# 'fish$'
     set shell=sh
 endif
 
+" For the moment, I've commented out vundle support, as (a) I don't use vim
+" as my main editor any more, so can (probably) manage without most plugins,
+" and (b) if I'm not using vim often, I tend not to keep up-to-date with
+" the changes in vundle usage, which can lead to problems with this init file.
 " =============================================================================
 " VUNDLE START
 " =============================================================================
-filetype on		" because sometimes on Mac OS X, off before on causes problems
-filetype off		" must do this before Vundle business
+"filetype on		" because sometimes on Mac OS X, off before on causes problems
+"filetype off		" must do this before Vundle business
 
 " Vim 7.2 without some patch or other doesn't support current vundle.
 " The MacVim I was using was OK, but the Apple vim wasn't. So upgrade
 " the MavVim to 7.3 and test for that...
-if version >= 703
-  " Set the runtime path to include Vundle
-  set rtp+=~/.vim/bundle/Vundle.vim
-  call vundle#begin()
-
-  " Let Vundle manage itself - this is required
-  Plugin 'VundleVim/Vundle.vim'
-  " Then various things mirrored at http://vim-scripts.org/vim/scripts.html
-
-  " Let's try using Tim Pope's fugitive git wrapper
-  Plugin 'tpope/vim-fugitive'
-
-  " I want pyflakes/pep8 checking, and the current recommended way to get
-  " this appears to be via Syntastic
-  "
-  " Remember to "pip install flake8" in the external environment...
-  "Plugin 'https://github.com/scrooloose/syntastic.git'
-
-  " The original pyflakes-vim is now pseudo-deprecated, as the author prefers
-  " syntastic, but it *is* still available, and in some ways the nicest
-  " solution
-  "Plugin 'https://github.com/kevinw/pyflakes-vim'
-
-  " Or just use flake8
-  " <F7> to run the checker
-  "Plugin 'https://github.com/nvie/vim-flake8'
-
-  " flake8-vim actually uses frosted
-  "Plugin 'https://github.com/andviro/flake8-vim'
-
-  if version >= 800
-    " ALE is asynchronous linting, so needs vim 8 to work
-    Plugin 'https://github.com/w0rp/ale.git'
-    let g:ale_linters = { 'python': ['flake8'], }
-    " Make it obvious which linter is reporting a problem, in case there are
-    " multiple linters being run
-    let g:ale_echo_msg_format = '%linter% says %s'
-    " Set command line options for flake8
-    let g:ale_python_flake8_options = '--max-line-length=120'
-    " And let's always have the sign gutter, to stop text jumping around
-    let g:ale_sign_column_always = 1
-  endif
-
-  " jedi for vim
-  Plugin 'https://github.com/davidhalter/jedi-vim.git'
-
-  " Support for fish shell
-  Plugin 'dag/vim-fish'
-
-  " Switch between buffers
-  "Plugin 'bufexplorer.zip'
-
-  " VimReStructuredText
-  "Plugin 'VST'
-
-  " Yet another indent finder, almost
-  "Plugin 'yaifa.vim'
-
-  " Emacs like gdb interface to cterm vim
-  "Plugin 'vimgdb'
-
-  " Enhanced version of the python syntax highlighting script
-  "Plugin 'python.vim--Vasiliev'
-
-  "Plugin 'RST-Tables'
-  " It looks as if vim-tables is more sophisticated than RST-Tables
-  "   http://dhruvasagar.com/2013/03/17/vim-table-mode
-  " It depends on Tabular, so...
-  "Plugin 'tabular'
-  "Plugin 'vim-tables'
-
-  "Plugin 'scratch'
-
-  " Tree-view of the undo history
-  "   http://sjl.bitbucket.org/gundo.vim/
-  "Plugin 'gundo'
-
-  " A Python omnicompletion utility
-  "Plugin 'pysmell.vim'
-
-  " Directory Browser
-  "Plugin 'ls.vim'
-
-  " Show all lines in the buffer containing word (grep buffer)
-  "Plugin 'occur.vim'
-
-  " Easy session management for gvim
-  "Plugin 'sessions.vim--Boland'
-
-  " A plugin for visually displaying indent levels in Vim
-  "   https://github.com/nathanaelkane/vim-indent-guides
-  "Plugin 'Indent-Guides'
-
-  " Colour scheme related
-  " First, a template for building one's own colour scheme
-  "Plugin 'colorscheme_template.vim'
-  " Then some specific examples
-  "Plugin 'habiLight'
-  "Plugin 'pyte'
-  "Plugin 'proton'
-  "Plugin 'sienna'
-
-  " Consider vim-abolish from Tim Pope: easily search for, substitute, and
-  " abbreviate multiple variants of a word
-  "   https://github.com/tpope/vim-abolish
-  "Plugin 'vim-abolish'
-  " Also, https://github.com/tpope/vim-scriptease, A Vim plugin for Vim plugins
-  "Plugin 'vim-scriptease
-
-  " A better (one hopes) Python indentation mode.
-  " It tries to do the following properly:
-  "
-  " foobar(foo,
-  "     bar)
-  "
-  " and:
-  "
-  " foobar(
-  "    foo,
-  "    bar
-  " )
-  Plugin 'Vimjas/vim-python-pep8-indent'
-
-  call vundle#end()
-  filetype plugin indent on	" and this required at end of vundle stuff
-endif
+"if version >= 703
+"  " Set the runtime path to include Vundle
+"  set rtp+=~/.vim/bundle/Vundle.vim
+"  call vundle#begin()
+"
+"  " Let Vundle manage itself - this is required
+"  Plugin 'VundleVim/Vundle.vim'
+"  " Then various things mirrored at http://vim-scripts.org/vim/scripts.html
+"
+"  " Let's try using Tim Pope's fugitive git wrapper
+"  Plugin 'tpope/vim-fugitive'
+"
+"  " I want pyflakes/pep8 checking, and the current recommended way to get
+"  " this appears to be via Syntastic
+"  "
+"  " Remember to "pip install flake8" in the external environment...
+"  "Plugin 'https://github.com/scrooloose/syntastic.git'
+"
+"  " The original pyflakes-vim is now pseudo-deprecated, as the author prefers
+"  " syntastic, but it *is* still available, and in some ways the nicest
+"  " solution
+"  "Plugin 'https://github.com/kevinw/pyflakes-vim'
+"
+"  " Or just use flake8
+"  " <F7> to run the checker
+"  "Plugin 'https://github.com/nvie/vim-flake8'
+"
+"  " flake8-vim actually uses frosted
+"  "Plugin 'https://github.com/andviro/flake8-vim'
+"
+"  if version >= 800
+"    " ALE is asynchronous linting, so needs vim 8 to work
+"    Plugin 'https://github.com/w0rp/ale.git'
+"    let g:ale_linters = { 'python': ['flake8'], }
+"    " Make it obvious which linter is reporting a problem, in case there are
+"    " multiple linters being run
+"    let g:ale_echo_msg_format = '%linter% says %s'
+"    " Set command line options for flake8
+"    let g:ale_python_flake8_options = '--max-line-length=120'
+"    " And let's always have the sign gutter, to stop text jumping around
+"    let g:ale_sign_column_always = 1
+"  endif
+"
+"  " jedi for vim
+"  Plugin 'https://github.com/davidhalter/jedi-vim.git'
+"
+"  " Support for fish shell
+"  Plugin 'dag/vim-fish'
+"
+"  " Switch between buffers
+"  "Plugin 'bufexplorer.zip'
+"
+"  " VimReStructuredText
+"  "Plugin 'VST'
+"
+"  " Yet another indent finder, almost
+"  "Plugin 'yaifa.vim'
+"
+"  " Emacs like gdb interface to cterm vim
+"  "Plugin 'vimgdb'
+"
+"  " Enhanced version of the python syntax highlighting script
+"  "Plugin 'python.vim--Vasiliev'
+"
+"  "Plugin 'RST-Tables'
+"  " It looks as if vim-tables is more sophisticated than RST-Tables
+"  "   http://dhruvasagar.com/2013/03/17/vim-table-mode
+"  " It depends on Tabular, so...
+"  "Plugin 'tabular'
+"  "Plugin 'vim-tables'
+"
+"  "Plugin 'scratch'
+"
+"  " Tree-view of the undo history
+"  "   http://sjl.bitbucket.org/gundo.vim/
+"  "Plugin 'gundo'
+"
+"  " A Python omnicompletion utility
+"  "Plugin 'pysmell.vim'
+"
+"  " Directory Browser
+"  "Plugin 'ls.vim'
+"
+"  " Show all lines in the buffer containing word (grep buffer)
+"  "Plugin 'occur.vim'
+"
+"  " Easy session management for gvim
+"  "Plugin 'sessions.vim--Boland'
+"
+"  " A plugin for visually displaying indent levels in Vim
+"  "   https://github.com/nathanaelkane/vim-indent-guides
+"  "Plugin 'Indent-Guides'
+"
+"  " Colour scheme related
+"  " First, a template for building one's own colour scheme
+"  "Plugin 'colorscheme_template.vim'
+"  " Then some specific examples
+"  "Plugin 'habiLight'
+"  "Plugin 'pyte'
+"  "Plugin 'proton'
+"  "Plugin 'sienna'
+"
+"  " Consider vim-abolish from Tim Pope: easily search for, substitute, and
+"  " abbreviate multiple variants of a word
+"  "   https://github.com/tpope/vim-abolish
+"  "Plugin 'vim-abolish'
+"  " Also, https://github.com/tpope/vim-scriptease, A Vim plugin for Vim plugins
+"  "Plugin 'vim-scriptease
+"
+"  " A better (one hopes) Python indentation mode.
+"  " It tries to do the following properly:
+"  "
+"  " foobar(foo,
+"  "     bar)
+"  "
+"  " and:
+"  "
+"  " foobar(
+"  "    foo,
+"  "    bar
+"  " )
+"  Plugin 'Vimjas/vim-python-pep8-indent'
+"
+"  call vundle#end()
+"  filetype plugin indent on	" and this required at end of vundle stuff
+"endif
 
 " Brief help
 "
@@ -479,18 +483,20 @@ function! FileFormatFlag()
 	endif
 endfunction
 
+" The function GitBranch needs fugitive, which I don't have if I'm not
+" installing vundle plugins.
 " Return:
 " * '(<current git branch>)' if there is one
 " * '(<8 chars of the SHA1>)' of the current commit if there is not
 " * '' if we're not in git
-function! GitBranch()
-	let s:branch = fugitive#head(8)
-	if s:branch == ''
-		return ''
-	else
-		return '(' . s:branch . ')'
-	endif
-endfunction
+"function! GitBranch()
+"	let s:branch = fugitive#head(8)
+"	if s:branch == ''
+"		return ''
+"	else
+"		return '(' . s:branch . ')'
+"	endif
+"endfunction
 
 " The standard statusline doesn't show the filetype, or whether the
 " file contains non-standard line endings. Unfortunately, modifying
@@ -499,7 +505,8 @@ set statusline=
 "set statusline+=%-3.3n\ 		    " buffer number, space=separator
 set statusline+=%<			    " truncate (following) on left
 set statusline+=%f\ 			    " file name, space=separator
-set statusline+=%{GitBranch()}		    " (<branch>) or (<sha1[:8]>) or nothing
+"Don't try to set the git branch without GitBranch (see above)
+"set statusline+=%{GitBranch()}		    " (<branch>) or (<sha1[:8]>) or nothing
 set statusline+=%y			    " [<filetype>]
 set statusline+=%m			    " [+] if modified
 set statusline+=%r			    " [RO] if readonly
